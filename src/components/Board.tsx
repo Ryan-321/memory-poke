@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Box, Grid, Paper } from '@mui/material'
 import { styled } from '@mui/material/styles';
 
-const CardPaper = styled(Paper)(({ theme }) => ({
-  aspectRatio: '1 / 1', // Ensure square cards
+const CardContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  aspectRatio: '1 / 1', // Ensure square cards
   backgroundColor: theme.palette.primary.light,
   color: theme.palette.primary.contrastText,
   cursor: 'pointer',
@@ -14,9 +14,24 @@ const CardPaper = styled(Paper)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.primary.main,
   },
+
+}));
+
+const CardFront = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
+  '& div': {
+    height: '100%',
+    width: '100%'
+  }
+})) as typeof Paper;
+
+const CardBack = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
   '& img': {
-    maxHeight: '100%',
-    maxWidth: '100%',
+    height: '100%',
+    width: '100%',
     objectFit: 'contain'
   }
 })) as typeof Paper;
@@ -98,9 +113,12 @@ export default function Board() {
             key={p.id}
             size={1}
           >
-            <CardPaper>
-              <img src={p.img} alt={p.name} />
-            </CardPaper>
+            <CardContainer>
+              <CardFront>?</CardFront>
+              <CardBack>
+                <img src={p.img} alt={p.name} />
+              </CardBack>
+            </CardContainer>
           </Grid>
         ))}
       </Grid>
