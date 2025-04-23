@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Box, Grid, Paper } from '@mui/material'
 import { styled } from '@mui/material/styles';
 import { motion } from 'motion/react';
-
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const CardContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
@@ -15,8 +15,6 @@ const CardContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   position: 'relative',
   perspective: 1000,
-  width: '150px',
-  height: '150px',
   userSelect: 'none',
   '&:hover': {
     backgroundColor: theme.palette.primary.main,
@@ -27,15 +25,17 @@ const CardFront = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.light,
   color: theme.palette.primary.contrastText,
   zIndex: 99,
-  width: '150px',
-  height: '150px',
+  width: '100%',
+  height: '100%',
   '& div': {
     position: 'absolute',
+    top: '0%',
+    left: '0%',
     backfaceVisibility: 'hidden',
     transformStyle: 'preserve-3d',
     transform: 'rotateX(0deg)',
-    perspective: 1000
-  }
+    textAlign: 'center',
+  },
 })) as typeof Paper;
 
 const CardBack = styled(Paper)(({ theme }) => ({
@@ -48,7 +48,6 @@ const CardBack = styled(Paper)(({ theme }) => ({
     height: '100%',
     width: '100%',
     objectFit: 'contain',
-    perspective: 1000,
     transform: 'rotateX(-180deg)',
     transformStyle: 'preserve-3d'
   }
@@ -152,7 +151,7 @@ export default function Board() {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current.src = src;
-      audioRef.current.volume = 0.3;
+      audioRef.current.volume = 0.5;
       audioRef.current.play();
     }
   }
@@ -185,7 +184,9 @@ export default function Board() {
               onClick={() => handleClick(c.id, c.name)}
               transition={{ duration: 0.5 }}
             >
-              <CardFront component={motion.div}>?</CardFront>
+              <CardFront component={motion.div} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <QuestionMarkIcon fontSize='large' />
+              </CardFront>
               <CardBack component={motion.div}>
                 <img src={c.img} alt={c.name} />
               </CardBack>
