@@ -3,56 +3,6 @@ import { Box, Grid, Paper } from '@mui/material'
 import { styled } from '@mui/material/styles';
 import { motion } from 'motion/react';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-
-const CardContainer = styled(Box)(({ theme }) => ({
-  alignItems: 'center',
-  aspectRatio: '1 / 1',
-  backgroundColor: theme.palette.primary.light,
-  color: theme.palette.primary.contrastText,
-  backfaceVisibility: 'hidden',
-  cursor: 'pointer',
-  display: 'flex',
-  justifyContent: 'center',
-  position: 'relative',
-  perspective: 1000,
-  userSelect: 'none',
-  '&:hover': {
-    backgroundColor: theme.palette.primary.main,
-  },
-})) as typeof Box;
-
-const CardFront = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.light,
-  color: theme.palette.primary.contrastText,
-  zIndex: 99,
-  width: '100%',
-  height: '100%',
-  '& div': {
-    position: 'absolute',
-    top: '0%',
-    left: '0%',
-    backfaceVisibility: 'hidden',
-    transformStyle: 'preserve-3d',
-    transform: 'rotateX(0deg)',
-    textAlign: 'center',
-  },
-})) as typeof Paper;
-
-const CardBack = styled(Paper)(({ theme }) => ({
-  '& img': {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.contrastText,
-    position: 'absolute',
-    top: '0%',
-    left: '0%',
-    height: '100%',
-    width: '100%',
-    objectFit: 'contain',
-    transform: 'rotateX(-180deg)',
-    transformStyle: 'preserve-3d'
-  }
-})) as typeof Paper;
-
 interface PokemonData {
   name: string;
   url: string;
@@ -63,9 +13,61 @@ interface Card {
   name: string;
   cry: string;
   img: string;
+  sprites: string[];
   isFlipped: boolean;
   isMatched: boolean;
 }
+
+const CardContainer = styled(Box)(({ theme }) => ({
+  aspectRatio: '1/1',
+  backgroundColor: theme.palette.primary.light,
+  backfaceVisibility: 'hidden',
+  borderRadius: 0,
+  color: theme.palette.primary.contrastText,
+  cursor: 'pointer',
+  display: 'flex',
+  position: 'relative',
+  perspective: 1000,
+  userSelect: 'none',
+})) as typeof Box;
+
+const CardFront = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.light,
+  borderRadius: 0,
+  color: theme.palette.primary.contrastText,
+  height: '100%',
+  width: '100%',
+  zIndex: 99,
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+  },
+  '& div': {
+    backfaceVisibility: 'hidden',
+    left: '0%',
+    position: 'absolute',
+    top: '0%',
+    transformStyle: 'preserve-3d',
+    transform: 'rotateX(0deg)',
+    textAlign: 'center',
+  },
+})) as typeof Paper;
+
+const CardBack = styled(Paper)(({ theme }) => ({
+  '& img': {
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: 0,
+    color: theme.palette.primary.contrastText,
+    height: '100%',
+    left: '0%',
+    objectFit: 'contain',
+    position: 'absolute',
+    top: '0%',
+    transform: 'rotateX(-180deg)',
+    transformStyle: 'preserve-3d',
+    width: '100%',
+  }
+})) as typeof Paper;
+
 
 export default function Board() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -92,7 +94,13 @@ export default function Board() {
               id: data.id,
               name: data.name,
               cry: data.cries['latest'] || '',
-              img: data.sprites?.other['official-artwork']['front_default'] || ''
+              img: data.sprites?.other['official-artwork']['front_default'] || '',
+              sprites: [
+                data.sprites?.back_default,
+                data.sprites?.back_shiny,
+                data.sprites?.front_default,
+                data.sprites?.front_shiny,
+              ]
             }
           })
         );
@@ -115,12 +123,10 @@ export default function Board() {
   }, []);
 
   // todo: add display loading
-
   // todo: add display error
 
   const handleClick = (id: string, name: string) => {
     const selected = cards.find((c) => (c.id === id));
-    console.log({ selected });
     if (!first) {
       setCards(
         cards.map((c) => (c.id === id) ? { ...c, isFlipped: true } : c)
@@ -185,7 +191,7 @@ export default function Board() {
               transition={{ duration: 0.5 }}
             >
               <CardFront component={motion.div} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <QuestionMarkIcon fontSize='large' />
+                <QuestionMarkIcon fontSize='large' />
               </CardFront>
               <CardBack component={motion.div}>
                 <img src={c.img} alt={c.name} />

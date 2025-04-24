@@ -7,7 +7,7 @@ function App() {
   // make a call to get pokemon and transform them into objects
   return (
     <>
-      <Typography variant='h3'>
+      <Typography variant='h3' gutterBottom>
         Pokemon Memory
       </Typography>
       <Board />
